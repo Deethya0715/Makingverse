@@ -1,23 +1,59 @@
 // src/App.jsx
 
 // 1. Core Imports
-import { useDataService } from './services/useDataService'; // Handles Firebase/Firestore connection
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // For navigation
+import React, { useState, useEffect } from 'react'; // ADDED useState and useEffect
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'; // ADDED AUTH IMPORTS
 
-// 2. Component Imports (Placeholders for Phase 2)
+// Database Service
+import { useDataService } from './services/useDataService'; // Handles Firebase/Firestore connection
+
+// 2. Component Imports
 import Dashboard from './components/Dashboard';
 import PaperManagement from './components/PaperManagement';
 import SiteSettings from './components/SiteSettings';
 import Navbar from './components/Navbar'; // A simple navigation bar
+import Login from './components/Login'; // ADDED LOGIN COMPONENT
 
 // 3. Main Application Component
 function App() {
-  // *** THE CRUCIAL REAL-TIME DATA PLUMBING ***
-  // This hook is now running, constantly listening to Firestore collections
-  // research_papers and site_settings for real-time updates.
-  const { researchPapers, siteSettings, loading, error } = useDataService();
+  // Authentication State
+  const auth = getAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Auth State Listener: Runs once on mount to check if a user is logged in
+  useEffect(() => {
+    // We use onAuthStateChanged to constantly listen for login/logout events
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user); // Set true if user exists, false otherwise
+      setAuthLoading(false); // Authentication check is complete
+    });
+    return unsubscribe; // Cleanup the subscription when the component unmounts
+  }, [auth]);
   
-  // A simple loading screen while the connection is established
+  // Data Service
+  const { researchPapers, siteSettings, loading, error } = useDataService();
+
+  // Handle Logout (passed to Navbar)
+  const handleLogout = () => {
+    signOut(auth);
+  };
+
+  // --- LOADING SCREENS ---
+
+  // 1. Authentication Loading Screen
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-xl font-semibold text-indigo-600">
+          Initializing Authentication...
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Data Loading Screen (Original logic)
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
@@ -28,7 +64,7 @@ function App() {
     );
   }
 
-  // A simple error screen if the connection fails
+  // A simple error screen if the connection fails (Original logic)
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen bg-red-50">
@@ -49,8 +85,8 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100 flex flex-col">
-        {/* Navigation Bar - Stays on top */}
-        <Navbar />
+        {/* Navigation Bar - Pass auth state and handler */}
+        <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
 
         {/* Main Content Area */}
         <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
@@ -59,16 +95,26 @@ function App() {
               Researcher CMS Dashboard
             </h1>
 
-            {/* Route Definitions */}
+            {/* Route Definitions - Conditional Routing Added */}
             <Routes>
-              {/* This route displays the list of papers (Phase 3) */}
+              {/* PUBLIC ROUTE: The Dashboard is always accessible */}
               <Route path="/" element={<Dashboard papers={researchPapers} settings={siteSettings} />} />
               
-              {/* This route will contain the Paper Management Form (Phase 2) */}
-              <Route path="/manage-papers" element={<PaperManagement />} />
-              
-              {/* This route will contain the Site Settings Form (Phase 4) */}
-              <Route path="/site-settings" element={<SiteSettings />} />
+              {/* PROTECTED ROUTES: Only accessible if isAuthenticated is true */}
+              {isAuthenticated ? (
+                <>
+                  {/* These routes show the forms if logged in */}
+                  <Route path="/manage-papers" element={<PaperManagement />} />
+                  <Route path="/site-settings" element={<SiteSettings />} />
+                </>
+              ) : (
+                <>
+                  {/* These routes show the Login form if NOT logged in */}
+                  {/* The public user will only see this if they manually navigate to these URLs. */}
+                  <Route path="/manage-papers" element={<Login />} />
+                  <Route path="/site-settings" element={<Login />} />
+                </>
+              )}
             </Routes>
 
             {/* Displaying Live Data Count for confirmation */}

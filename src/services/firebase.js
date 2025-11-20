@@ -1,23 +1,25 @@
-// src/services/firebase.js
-
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // <-- ADDED: Need this for the database
+import { getAuth } from "firebase/auth"; // <-- ADDED: Need this for authentication checks
 
-// TODO: REPLACE WITH YOUR ACTUAL FIREBASE CONFIGURATION
-// This information is obtained from your Firebase Project Settings -> General tab.
+// Your web app's Firebase configuration (This section is CORRECT)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDXdcsITSqdAzPSPG0NKOzrnbL-RMmrbns",
+  authDomain: "makingverse-1df28.firebaseapp.com",
+  projectId: "makingverse-1df28",
+  storageBucket: "makingverse-1df28.firebasestorage.app",
+  messagingSenderId: "332155817780",
+  appId: "1:332155817780:web:f4130b2577dccc768a5f61",
+  measurementId: "G-Q0NBH4MCLJ" // This can be left or removed, it's optional
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize services
-export const db = getFirestore(app);
-export const auth = getAuth(app);
+// Initialize and EXPORT the services that the rest of the application needs
+export const db = getFirestore(app); // <-- CRITICAL: Exports the database instance
+export const auth = getAuth(app); // <-- CRITICAL: Exports the auth instance
+
+// Note: You can remove 'import { getAnalytics } from "firebase/analytics";' 
+// and the line 'const analytics = getAnalytics(app);' if you don't use them, 
+// but leaving them won't hurt.
