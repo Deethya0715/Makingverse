@@ -40,7 +40,7 @@ const Dashboard = ({ papers = [] }) => {
     <div className="min-h-screen font-sans text-gray-900 bg-beige-100">
       <main className="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <header className="hero-bg hero-section hero-container py-28">
+        <header className="hero-bg hero-section hero-container">
           <div className="text-left">
             <div className="hero-inner max-w-6xl mx-0 px-4 lg:px-0">
               <h1
