@@ -1,11 +1,10 @@
 import React from 'react';
-// Assuming your logo path is correct
-import logo from '../../image.png'; 
+import logo from '../assets/react.svg';
 
 const Navbar = () => {
   return (
     // Added sticky top-0 and z-10 for layering and fixed position when scrolling
-    <nav className="bg-white shadow-lg sticky top-0 z-10 border-b border-gray-100">
+    <nav className="bg-transparent sticky top-0 z-20 border-b border-black/20">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         
@@ -19,22 +18,18 @@ const Navbar = () => {
               className="h-6 w-6" 
             />
             {/* Optional: Add a text name next to the logo if needed */}
-            <span className="text-xl font-bold text-gray-900 tracking-tight hidden sm:block">
+            <span className="text-xl font-bold text-sky-400 tracking-tight hidden sm:block">
               DEAM Lab
             </span>
           </a>
         </div>
 
-        {/* "Research" link on the right */}
-        <div className="flex items-center">
-          <a 
-            href="/research" 
-            className="text-gray-600 hover:text-indigo-600 font-semibold text-base 
-                       transition duration-200 border-b-2 border-transparent hover:border-indigo-600 
-                       pb-1"
-          >
-            Research
-          </a>
+        {/* Links on the right */}
+        <div className="flex items-center space-x-8">
+          <a href="/research" className="text-gray-200 hover:text-sky-300 font-medium transition">Research</a>
+          <a href="/team" className="text-gray-200 hover:text-sky-300 font-medium transition">Team</a>
+          <a href="/contact" className="text-gray-200 hover:text-sky-300 font-medium transition">Contact</a>
+          <a href="/login" className="text-white bg-sky-600 px-4 py-1 rounded-full font-semibold shadow-sm hover:opacity-95 transition">Login</a>
         </div>
       </div>
     </nav>

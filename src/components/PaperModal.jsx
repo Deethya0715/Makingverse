@@ -1,12 +1,13 @@
 // PaperModal.jsx
 import React from 'react';
-import SchematicDiagram from './SchematicDiagram'; 
-
-// Define colors (or import from a shared constants file)
-const COLOR_BLUE_HEADER = '#1E40AF';
-const COLOR_DOI = '#5B473C'; 
-const COLOR_PDF = '#9C513A';
-const COLOR_VIDEO = '#BC6947';
+import SchematicDiagram from './SchematicDiagram';
+import {
+    COLOR_BLUE_HEADER,
+    COLOR_DOI,
+    COLOR_PDF,
+    COLOR_VIDEO,
+    COLOR_MODAL,
+} from '../constants/colors';
 
 /**
  * Renders the full details of a paper in a modal.
@@ -34,8 +35,9 @@ const PaperModal = ({ paper, onClose, isOpen = false }) => {
             onClick={handleBackdropClick}
         >
             <div 
-                className="bg-white rounded-xl shadow-3xl w-full max-w-4xl my-8 transform transition-all duration-300 scale-100"
+                className="rounded-xl shadow-3xl w-full max-w-4xl my-8 transform transition-all duration-300 scale-100"
                 onClick={e => e.stopPropagation()}
+                style={{ backgroundColor: COLOR_MODAL }}
             >
                 {/* Modal Header */}
                 <div className="p-6 border-b border-gray-100 flex justify-between items-start" 
