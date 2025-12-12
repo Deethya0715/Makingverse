@@ -6,11 +6,11 @@ const Navbar = () => {
     // Added sticky top-0 and z-10 for layering and fixed position when scrolling
     <nav className="bg-transparent sticky top-0 z-20 border-b border-black/20">
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col items-center space-y-2">
         
         {/* Logo on the left */}
-        <div className="flex items-center">
-          <a href="/" className="flex items-center space-x-2">
+        <div className="flex items-center justify-center">
+          <a href="/" className="flex items-center space-x-2 justify-center">
             <img 
               src={logo} 
               alt="DEAM Lab Logo" 
@@ -25,7 +25,7 @@ const Navbar = () => {
         </div>
 
         {/* Links on the right */}
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center space-x-8 justify-center">
           <a href="/research" className="text-gray-200 hover:text-sky-300 font-medium transition">Research</a>
           <a href="/team" className="text-gray-200 hover:text-sky-300 font-medium transition">Team</a>
           <a href="/contact" className="text-gray-200 hover:text-sky-300 font-medium transition">Contact</a>

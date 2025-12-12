@@ -38,11 +38,10 @@ const Dashboard = ({ papers = [] }) => {
 
   return (
     <div className="min-h-screen font-sans text-gray-900 bg-beige-100">
-      <main className="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
-        {/* Hero Section */}
-        <header className="hero-bg hero-section hero-container">
-          <div className="text-left">
-            <div className="hero-inner max-w-6xl mx-0 px-4 lg:px-0">
+      {/* Hero Section outside constrained main so it spans full width */}
+      <header className="hero-bg hero-section hero-container w-full">
+        <div className="text-center">
+          <div className="hero-inner max-w-7xl mx-auto px-4 lg:px-0">
               <h1
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-3 tracking-tight leading-tight text-gray-900 hero-title"
                 style={{ color: COLOR_BLUE_HEADER || '#3b3b3b' }}
@@ -55,8 +54,8 @@ const Dashboard = ({ papers = [] }) => {
                 Exploring the symbiotic relationship between humans and technology to create intuitive, effective, and empowering digital experiences.
               </p>
 
-              <div className="flex justify-start">
-                <div className="w-full hero-search-wrapper">
+              <div className="flex justify-center">
+                <div className="w-full hero-search-wrapper flex justify-center">
                   <input
                     type="search"
                     placeholder="Search by title, author, or keyword..."
@@ -68,9 +67,10 @@ const Dashboard = ({ papers = [] }) => {
           </div>
         </header>
 
+      <main className="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8">
         <section>
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Featured Publications</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center justify-center">
             {displayPapers.map((p) => (
               <PaperCard key={p.id || p._id} paper={p} onViewDetails={() => openModal(p)} />
             ))}

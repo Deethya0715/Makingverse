@@ -12,7 +12,7 @@ const PaperCard = ({ paper, onViewDetails }) => {
 	const images = paper.images || [];
 	return (
 		<div
-			className="paper-card flex-shrink-0 w-full md:w-[48%] lg:w-[48%] xl:w-[49%] p-6 bg-white rounded-xl border border-gray-100 transition duration-300 ease-in-out flex flex-col justify-between hover:shadow-2xl hover:-translate-y-0.5"
+			className="paper-card w-full sm:w-[85%] md:w-[70%] lg:w-[60%] mx-auto p-6 bg-white rounded-xl border border-gray-100 transition duration-300 ease-in-out flex flex-col justify-between hover:shadow-2xl hover:-translate-y-0.5 text-center"
 		>
 			<div>
 				{/* Image Gallery (if any), else Schematic Diagram */}
@@ -33,18 +33,18 @@ const PaperCard = ({ paper, onViewDetails }) => {
 
 				{/* Paper Title and Metadata Container */}
 				<div className="mt-4">
-					<h3 className="text-lg font-extrabold text-gray-900 mb-2 leading-snug">
+					<h3 className="text-lg font-extrabold text-gray-900 mb-2 leading-snug text-center">
 						{paper.title}
 					</h3>
 
 					<div className="paper-metadata text-sm text-gray-600 space-y-3">
 						{/* Authors */}
-						<p className="font-semibold text-gray-700">
+						<p className="font-semibold text-gray-700 text-center">
 							By: <span className="font-normal text-gray-600">{paper.authors}</span>
 						</p>
 
 						{/* Abstract - Increased line-clamp to show more content */}
-						<p className="line-clamp-6 italic text-gray-500">
+						<p className="line-clamp-6 italic text-gray-500 text-center">
 							{paper.abstract}
 						</p>
 					</div>
