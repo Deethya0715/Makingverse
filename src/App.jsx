@@ -1,145 +1,112 @@
-// src/App.jsx
+import { useState } from "react";
 
-// 1. Core Imports
-import React, { useState, useEffect } from 'react'; 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'; 
+const sampleCards = [
+  {
+    id: 1,
+    images: [
+      "https://via.placeholder.com/150",
+      "https://via.placeholder.com/150/0000FF",
+      "https://via.placeholder.com/150/FF0000",
+    ],
+    title: "Card Title One",
+    authors: "Author A, Author B",
+    description:
+      "This is a short description of the paper or topic shown in the card.",
+    links: ["DOI", "PDF", "Video", "Page"],
+  },
+  {
+    id: 2,
+    images: [
+      "https://via.placeholder.com/150/FFFF00",
+      "https://via.placeholder.com/150/00FFFF",
+      "https://via.placeholder.com/150/FF00FF",
+    ],
+    title: "Card Title Two",
+    authors: "Author C, Author D",
+    description:
+      "Another description for the second card, summarizing the content.",
+    links: ["DOI", "PDF", "Video", "Page"],
+  },
+];
 
-// Database Service (Placeholder for Firebase hook)
-import { useDataService } from './services/useDataService'; 
+export default function App() {
+  const [search, setSearch] = useState("");
 
-// 2. Component Imports (Assuming they are correctly organized in the filesystem)
-import Dashboard from './components/Dashboard'; 
-import PaperManagement from './components/PaperManagement';
-import SiteSettings from './components/SiteSettings';
-import Navbar from './components/Navbar'; 
-import Login from './components/Login'; 
+  return (
+    <div className="bg-beige-100 min-h-screen font-sans text-gray-900">
+      <nav className="flex justify-between items-center p-6 bg-white shadow">
+        <div className="font-bold text-xl">Logo</div>
+        <ul className="flex space-x-8">
+          <li className="hover:text-brown-700 cursor-pointer">Research</li>
+          <li className="hover:text-brown-700 cursor-pointer">Team</li>
+          <li className="hover:text-brown-700 cursor-pointer">Contact</li>
+        </ul>
+      </nav>
 
-// 3. Main Application Component
-function App() {
-    // Authentication State
-    const auth = getAuth();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [authLoading, setAuthLoading] = useState(true);
+      <header className="text-center py-20 bg-beige-100">
+        <h1 className="text-4xl font-semibold mb-4">
+          Your first line of headline
+        </h1>
+        <h2 className="text-2xl mb-8">A second line follows here</h2>
+        <div className="max-w-md mx-auto relative">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-full border border-gray-300 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-brown-500"
+          />
+          <svg
+            className="w-5 h-5 absolute left-3 top-3.5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+            />
+          </svg>
+        </div>
+      </header>
 
-    // Auth State Listener
-    useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        setIsAuthenticated(!!user); 
-        setAuthLoading(false); 
-      });
-      return unsubscribe; 
-    }, [auth]);
-    
-    // Data Service
-    // Placeholder usage: Assumes useDataService is defined elsewhere and fetches data
-    const { researchPapers, siteSettings, loading, error } = useDataService();
+      <main className="max-w-6xl mx-auto py-16 px-6 grid md:grid-cols-2 gap-12">
+        {sampleCards.map((card) => (
+          <div
+            key={card.id}
+            className="bg-white rounded-lg border border-gray-300 p-6 shadow-sm"
+          >
+            <div className="flex space-x-4 overflow-x-auto pb-4">
+              {card.images.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`Card ${card.id} image ${idx + 1}`}
+                  className="w-32 h-20 object-cover rounded"
+                />
+              ))}
+            </div>
 
-    // Handle Logout
-    const handleLogout = () => {
-      signOut(auth);
-    };
+            <h3 className="text-xl font-semibold">{card.title}</h3>
+            <p className="text-sm italic mb-4">{card.authors}</p>
+            <p className="mb-6">{card.description}</p>
 
-    // --- LOADING SCREENS & ERROR SCREENS ---
-    if (authLoading) {
-      return (
-        <div className="flex items-center justify-center h-screen bg-gray-50">
-          <div className="text-xl font-semibold text-indigo-600">
-            Initializing Authentication...
-          </div>
-        </div>
-      );
-    }
-    if (loading) {
-      return (
-        <div className="flex items-center justify-center h-screen bg-gray-50">
-          <div className="text-xl font-semibold text-indigo-600">
-            Connecting to Firebase...
-          </div>
-        </div>
-      );
-    }
-    if (error) {
-      return (
-        <div className="flex items-center justify-center h-screen bg-red-50">
-          <div className="p-6 bg-white border border-red-400 rounded-lg shadow-lg text-red-700">
-            <h2 className="text-2xl font-bold mb-2">Error Connecting to Database</h2>
-            <p className="font-mono text-sm">
-              Please check your Firebase configuration and network status.
-            </p>
-            <p className="mt-4">
-              Details: {error.message}
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    // 4. Main Application Layout
-    return (
-      <Router>
-        {/* Main wrapper with min height to ensure footer positioning */}
-        <div className="min-h-screen flex flex-col"> 
-          
-          {/* Top CMS Administration Bar - Placeholder Navbar component */}
-          <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-
-          {/* Main content area that grows to fill space */}
-          <main className="flex-grow">
-            <Routes>
-              {/* PUBLIC ROUTE: Dashboard with full page styling */}
-              <Route 
-                path="/" 
-                element={
-                  <Dashboard 
-                    papers={researchPapers} 
-                    settings={siteSettings} 
-                    isAuthenticated={isAuthenticated} 
-                  />
-                } 
-              />
-              
-              {/* PROTECTED ROUTES */}
-              <Route 
-                path="/manage-papers" 
-                element={
-                  isAuthenticated ? (
-                    <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-180px)]">
-                      <PaperManagement />
-                    </div>
-                  ) : (
-                    <Navigate to="/" replace />
-                  )
-                } 
-              />
-              
-              <Route 
-                path="/site-settings" 
-                element={
-                  isAuthenticated ? (
-                    <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-180px)]">
-                      <SiteSettings />
-                    </div>
-                  ) : (
-                    <Navigate to="/" replace />
-                  )
-                } 
-              />
-              
-              {/* Login route */}
-              <Route path="/login" element={<Login />} />
-              
-            </Routes>
-          </main>
-
-          {/* Simple Footer */}
-          <footer className="w-full bg-gray-800 text-white text-center p-3 mt-auto">
-            <p className="text-sm">CMS Developed by Your Name | &copy; {new Date().getFullYear()}</p>
-          </footer>
-          
-        </div>
-      </Router>
-    );
+            <div className="flex space-x-3 flex-wrap">
+              {card.links.map((link, idx) => (
+                <button
+                  key={idx}
+                  className="bg-brown-600 text-white text-xs font-semibold rounded-full px-4 py-1 hover:bg-brown-700 transition"
+                >
+                  {link}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </main>
+    </div>
+  );
 }
-
-export default App;

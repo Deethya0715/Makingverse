@@ -35,9 +35,9 @@ const mockPapers = [
 // --- END MOCK DATA ---
 
 /**
- * The main Dashboard component using the light background color F0E4D4.
- */
-const Dashboard = ({ papers = [], settings = {}, isAuthenticated = false }) => {
+ * The main Dashboard component using the light background color F0E4D4.
+ */
+const Dashboard = ({ papers = [] }) => {
   // Use the papers prop from Firebase, fall back to mock data if empty
   const displayPapers = papers && papers.length > 0 ? papers : mockPapers;
   
@@ -58,58 +58,50 @@ const Dashboard = ({ papers = [], settings = {}, isAuthenticated = false }) => {
   return (
     <div 
       className="min-h-screen font-sans text-gray-800"
-      style={{ backgroundColor: COLOR_PRIMARY }} 
+      // Using a light off-white background
+      style={{ backgroundColor: '#F9FAFB' }} 
     > 
       
-      {/* 1. Dashboard Header (separate from CMS Navbar) */}
-      <header className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-4 bg-white border-b border-gray-100 shadow-sm">
-        <div className="text-lg sm:text-xl font-extrabold text-gray-900">HCI Research Portal</div>
-        <nav className="flex space-x-4 sm:space-x-6 lg:space-x-8 text-sm text-gray-500 font-medium">
-          <a href="#" className="hover:text-gray-900 transition duration-150">Research</a>
-          <a href="#" className="hover:text-gray-900 transition duration-150">Team</a>
-          <a href="#" className="hover:text-gray-900 transition duration-150">About</a>
-        </nav>
-      </header>
-
       {/* 2. Main Content Area */}
-      <main className="max-w-7xl mx-auto py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto pt-16 pb-20 px-4 sm:px-6 lg:px-8">
         
-        {/* 2.1. Central Text Block */}
-        <section className="text-center mb-12 sm:mb-16">
+        {/* 2.1. Central Text Block (Hero Section) */}
+        <section className="text-center mb-16">
           <h1 
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight"
-            style={{ color: COLOR_BLUE_HEADER }}
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 tracking-tighter"
+            // Using a modern Indigo color for a clean header
+            style={{ color: COLOR_BLUE_HEADER || '#4F46E5' }} 
           >
-            Innovating the Future of Human-Computer Interaction
+            Innovating the Future of HCI
           </h1>
-          <p className="max-w-3xl mx-auto text-gray-700 text-lg sm:text-xl font-light">
+          <p className="max-w-4xl mx-auto text-gray-600 text-xl font-light">
             Exploring the <strong>symbolic relationship</strong> between humans and technology to create intuitive, effective, and empowering digital experiences.
           </p>
         </section>
 
-        {/* 2.2. Search Bar */}
-        <div className="flex justify-center mb-16 sm:mb-20">
-          <div className="w-full max-w-2xl relative">
+        {/* 2.2. Search Bar - Polished Look */}
+        <div className="flex justify-center mb-20">
+          <div className="w-full max-w-3xl relative">
             <input 
               type="search" 
               placeholder="Search by author, paper, or topic..." 
-              className="w-full p-3 sm:p-4 pl-10 sm:pl-12 border-2 border-gray-200 rounded-full shadow-lg focus:ring-4 focus:ring-opacity-50 focus:ring-gray-400 focus:border-gray-400 bg-white text-sm sm:text-base transition duration-200 search-input"
+              className="w-full p-4 pl-12 border border-gray-300 rounded-xl shadow-inner focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-lg transition duration-200 search-input"
               style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' viewBox='0 0 20 20' fill='%239CA3AF'%3E%3Cpath fill-rule='evenodd' d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z' clip-rule='evenodd'/%3E%3C/svg%3E")`,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' viewBox='0 0 24 24' stroke-width='1.5' stroke='%236B7280' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Ccircle cx='10' cy='10' r='7'/%3E%3Cline x1='21' y1='21' x2='15' y2='15'/%3E%3C/svg%3E")`,
                 backgroundRepeat: 'no-repeat',
-                backgroundPosition: '0.75rem center',
-                backgroundSize: '1.25rem'
+                backgroundPosition: '1rem center',
+                backgroundSize: '1.5rem'
               }}
             />
           </div>
         </div>
 
-        {/* 2.3. Papers Grid */}
+        {/* 2.3. Papers Grid - Enhanced Header */}
         <section>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8 border-b-2 border-gray-300 pb-2">
-            Featured Publications (Total: {displayPapers.length})
+          <h2 className="text-3xl font-bold text-gray-800 mb-10 border-b border-indigo-200 pb-3">
+            Featured Publications <span className="text-xl font-normal text-gray-500">({displayPapers.length} Total)</span>
           </h2>
-          <div className="flex flex-wrap justify-between gap-6 sm:gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayPapers.length > 0 ? (
               displayPapers.map(p => (
                 <PaperCard 
@@ -119,7 +111,7 @@ const Dashboard = ({ papers = [], settings = {}, isAuthenticated = false }) => {
                 />
               ))
             ) : (
-              <div className="w-full text-center text-gray-500 p-8 sm:p-10 bg-white rounded-xl shadow-md">
+              <div className="w-full text-center text-gray-500 p-10 bg-black rounded-xl shadow-md col-span-full">
                 No papers to display.
               </div>
             )}
@@ -136,8 +128,8 @@ const Dashboard = ({ papers = [], settings = {}, isAuthenticated = false }) => {
       </main>
       
       {/* 3. Footer */}
-      <footer className="w-full py-6 sm:py-8 text-center text-gray-600 text-sm border-t border-gray-200 bg-white mt-auto">
-        <p>© 2025 HCI Research Group. All rights reserved.</p>
+      <footer className="w-full py-8 text-center text-gray-400 text-sm border-t border-gray-200 bg-gray-900 mt-auto">
+        <p>© {new Date().getFullYear()} HCI Research Group. All rights reserved.</p>
       </footer>
     </div>
   );
