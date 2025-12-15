@@ -1,52 +1,27 @@
-// src/components/Navbar.jsx (Revised for standard horizontal layout)
-
 import React from 'react';
-import logo from "../assets/public/DEAM_Lab_Logo.png";
+import logo from '../assets/public/DEAM_Lab_Logo.png';
+import { COLOR_BLUE_HEADER } from '../constants/colors';
 
-const Navbar = () => {
-  return (
-    // The fixed/sticky positioning and z-index are great!
-    // Using bg-white/90 and backdrop-blur is a common modern effect for transparency.
-    // I've changed 'bg-transparent' to 'bg-white/90' for better visibility against potential background content.
-    <nav className="bg-white/90 backdrop-blur-sm sticky top-0 z-20 border-b border-black/20">
+const Navbar = () => (
+  // Remove sticky/backdrop blur for simplicity, keeping background white
+  <nav className="navbar w-full bg-white py-3">
+    {/* Centering the entire content block: Use flex col and items-center to stack and center everything */}
+    <div className="mx-auto flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
       
-      {/* The key change: use 'flex' and 'justify-between' 
-        to place children (Logo and Links) on opposite sides.
-        Removed 'flex-col' and 'space-y-2' from the container.
-      */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        
-        {/* Logo/Title on the Left */}
-        <div className="flex items-center">
-          <a href="/" className="flex items-center space-x-2">
-            <img 
-              src={logo} 
-              alt="DEAM Lab Logo" 
-              className="logo-img" 
-            />
-            {/* Kept the text hidden on small screens, visible on medium+ */}
-            <span className="text-xl font-bold text-sky-600 tracking-tight hidden md:block">
-              DEAM Lab
-            </span>
-          </a>
+      {/* 1. Logo Group: Centered horizontally by parent div */}
+      <a href="/" className="flex flex-col items-center space-y-2"> 
+        <img src={logo} alt="DEAM Lab Logo" className="logo-img" />
+        {/* Remove hidden md:block if you want the "DESIGN ENGINEERING..." text always visible */}
+        <div className="text-center">
         </div>
+      </a>
 
-        {/* Links on the Right */}
-        {/* Using 'text-gray-700' and 'bg-sky-600' to fit a light background */}
-        <div className="flex items-center space-x-8">
-          <a href="/research" className="text-gray-700 hover:text-sky-600 font-medium transition">Research</a>
-          <a href="/team" className="text-gray-700 hover:text-sky-600 font-medium transition">Team</a>
-          <a href="/contact" className="text-gray-700 hover:text-sky-600 font-medium transition">Contact</a>
-          <a 
-            href="/login" 
-            className="text-white bg-sky-600 px-4 py-1.5 rounded-full font-semibold shadow-md hover:bg-sky-700 transition duration-300 text-sm"
-          >
-            Login
-          </a>
-        </div>
+      {/* 2. Link Group: Centered horizontally by parent div */}
+      <div className="flex items-center gap-6 mt-2">
+        <a href="/research" className="nav-link" style={{ color: COLOR_BLUE_HEADER }}>Research</a>
       </div>
-    </nav>
-  );
-};
+    </div>
+  </nav>
+);
 
 export default Navbar;
