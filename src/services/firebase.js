@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"; // <-- ADDED: Need this for the database
+import { getFirestore } from "firebase/firestore"; // Firestore (existing)
+import { getDatabase } from 'firebase/database'; // Realtime Database (added)
 import { getAuth } from "firebase/auth"; // <-- ADDED: Need this for authentication checks
 
 // Your web app's Firebase configuration (This section is CORRECT)
@@ -19,6 +20,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize and EXPORT the services that the rest of the application needs
 export const db = getFirestore(app); // <-- CRITICAL: Exports the database instance
 export const auth = getAuth(app); // <-- CRITICAL: Exports the auth instance
+export const rtdb = getDatabase(app); // Realtime Database instance for push/ref
 
 // Note: You can remove 'import { getAnalytics } from "firebase/analytics";' 
 // and the line 'const analytics = getAnalytics(app);' if you don't use them, 

@@ -1,4 +1,3 @@
-// PaperModal.jsx
 import React from 'react';
 import SchematicDiagram from './SchematicDiagram';
 import {
@@ -11,12 +10,8 @@ import {
 
 /**
  * Renders the full details of a paper in a modal.
- * @param {object} paper - The data for the paper.
- * @param {function} onClose - Function to close the modal.
- * @param {boolean} isOpen - Whether the modal is open or not.
  */
 const PaperModal = ({ paper, onClose, isOpen = false }) => {
-    // Renders null if not open or no paper data is available
     if (!paper || !isOpen) return null;
 
     const handleBackdropClick = (e) => {
@@ -26,16 +21,21 @@ const PaperModal = ({ paper, onClose, isOpen = false }) => {
     };
 
     const handleDOIClick = () => {
-        window.open(`https://doi.org/${paper.doi}`, '_blank');
+        if (paper.doi) {
+            window.open(`https://doi.org/${paper.doi}`, '_blank');
+        }
     };
 
     return (
+        // OVERLAY: **fixed inset-0** for full screen, **bg-gray-800 bg-opacity-75** for clear backdrop, 
+        // **flex items-center justify-center** for perfect vertical and horizontal centering.
         <div 
-            className="fixed inset-0 z-50 overflow-y-auto bg-white bg-opacity-50 flex items-start justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 overflow-y-auto bg-gray-800 bg-opacity-75 flex items-center justify-center"
             onClick={handleBackdropClick}
         >
+            {/* MODAL PANEL: m-4 ensures screen padding, w-full max-w-4xl defines the size. */}
             <div 
-                className="rounded-xl shadow-3xl w-full max-w-4xl my-8 transform transition-all duration-300 scale-100"
+                className="rounded-xl shadow-3xl w-full max-w-4xl m-4 transform transition-all duration-300 scale-100"
                 onClick={e => e.stopPropagation()}
                 style={{ backgroundColor: COLOR_MODAL }}
             >
@@ -75,18 +75,7 @@ const PaperModal = ({ paper, onClose, isOpen = false }) => {
                     <div className="space-y-4">
                         <h3 className="text-xl font-bold text-gray-900">Full Abstract</h3>
                         
-                        {/* Image for Paper 1 (Virtual Body Swapping) to illustrate the VR setup */}
-                        {paper.id === 1 && (
-                            <div className="my-4">
-                                
-                            </div>
-                        )}
-                        {/* Image for Paper 2 (Gaze Tracking in Mixed Reality) to illustrate the mechanism */}
-                        {paper.id === 2 && (
-                            <div className="my-4">
-                                
-                            </div>
-                        )}
+                        {/* Image sections omitted for brevity/placeholder */}
 
                         <p className="text-gray-700 italic border-l-4 border-gray-200 pl-4">
                             {paper.abstract}

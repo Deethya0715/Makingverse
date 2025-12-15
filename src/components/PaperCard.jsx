@@ -12,7 +12,7 @@ const PaperCard = ({ paper, onViewDetails }) => {
 	const images = paper.images || [];
 	return (
 		<div
-			className="paper-card w-full sm:w-[85%] md:w-[70%] lg:w-[60%] mx-auto p-6 bg-white rounded-xl border border-gray-100 transition duration-300 ease-in-out flex flex-col justify-between hover:shadow-2xl hover:-translate-y-0.5 text-center"
+			className="paper-card w-full p-6 bg-white rounded-xl border border-gray-100 transition duration-300 ease-in-out flex flex-col justify-between hover:shadow-2xl hover:-translate-y-0.5 text-center"
 		>
 			<div>
 				{/* Image Gallery (if any), else Schematic Diagram */}
