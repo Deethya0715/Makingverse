@@ -6,8 +6,10 @@ import './App.css';
 export default function App() {
   return (
     <div className="app-root">
-      <Navbar />
-      <Dashboard />
+      <div className="site-wrap mx-auto px-4 sm:px-6 lg:px-8">
+        <Navbar />
+        <Dashboard />
+      </div>
     </div>
   );
 }

@@ -27,7 +27,8 @@ const Dashboard = ({ papers = [] }) => {
   const [selectedPaper, setSelectedPaper] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = (paper) => {
+  const openModal = (paper) => {
+    setSelectedPaper(paper);
     setIsModalOpen(true);
   };
 
@@ -56,9 +57,14 @@ const Dashboard = ({ papers = [] }) => {
               Exploring the symbiotic relationship between humans and technology to create intuitive, effective, and empowering digital experiences.
             </p>
 
-						<div className="flex justify-center">
-						<SearchBox />
-						</div>
+            {/* FIX: Remove the 'flex justify-center' wrapper to prevent interference.
+                Rely on the 'mx-auto' within the SearchBox component's wrapper.
+                Since the parent has text-align: center, setting the container to 
+                be 'block' will center it naturally.
+            */}
+            <div className="block"> 
+            <SearchBox />
+            </div>
           </div>
         </div>
       </header>
@@ -67,10 +73,10 @@ const Dashboard = ({ papers = [] }) => {
       <main className="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8 w-full flex-grow">
         <section id="featured">
           {/* REMOVED INNER DIV: Centering is handled by the parent <main> tag */}
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 **text-center**">Featured Publications</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Featured Publications</h2>
 
           {/* GRID: place-items-center centers each card within its grid column. */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch **place-items-center**">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch place-items-center">
             {displayPapers.map((p) => (
               <PaperCard key={p.id || p._id} paper={p} onViewDetails={() => openModal(p)} />
             ))}
@@ -86,8 +92,6 @@ const Dashboard = ({ papers = [] }) => {
       </footer>
     </div>
   );
-
-
 };
 
 export default Dashboard;

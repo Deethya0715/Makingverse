@@ -194,6 +194,20 @@
   background-color: #F0E4D4;
 }
 
+/* The centered site wrapper constrains the page content and keeps everything visually aligned */
+.site-wrap {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+/* Small tweak: make navbar content center inside the wrapper on large widths */
+.navbar > .max-w-7xl, .navbar > .container, .navbar > .site-wrap {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
 /* Navbar - centered and elegant */
 .navbar {
   position: sticky;
