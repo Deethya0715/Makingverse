@@ -1,44 +1,90 @@
-// src/components/PublicDisplay.jsx (Example Integration)
+// src/components/PublicDisplay.jsx
 
-import React from 'react';
-import { useFetchPapers } from '../hooks/useFetchPapers';
+import React, { useState } from 'react';
+import PaperCard from './PaperCard';
+import PaperModal from './PaperModal';
+import SearchBox from './SearchBox';
+import { useFetchPapers } from '../hooks/useFetchPapers'; 
+import { COLOR_BLUE_HEADER } from '../constants/colors';
 
 const PublicDisplay = () => {
     const { papers, loading } = useFetchPapers();
 
+    const [selectedPaper, setSelectedPaper] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = (paper) => {
+        setSelectedPaper(paper);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedPaper(null);
+    };
+    
+    // Handle Loading and No Data States
     if (loading) {
-        return <div className="text-center p-10">Loading research papers...</div>;
+        return (
+            <div className="min-h-screen font-sans text-gray-900 bg-beige-100 flex justify-center items-center">
+                <h2 className="text-3xl font-bold text-sky-700">Loading All Papers...</h2>
+            </div>
+        );
     }
 
     if (papers.length === 0) {
-        return <div className="text-center p-10">No papers have been submitted yet.</div>;
+         return (
+            <div className="min-h-screen font-sans text-gray-900 bg-beige-100 flex justify-center items-center">
+                <h2 className="text-3xl font-bold text-gray-600">No papers found in the database.</h2>
+            </div>
+        );
     }
+    
+    const displayPapers = papers; 
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6">🔬 Available Research Papers</h1>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {papers.map((paper) => (
-                    // Display each paper as a card
-                    <div key={paper.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-                        <h3 className="text-xl font-semibold text-sky-700 mb-2">{paper.title}</h3>
-                        <p className="text-gray-600">
-                            <strong>Authors:</strong> {paper.authors}
-                        </p>
-                        <p className="text-gray-600">
-                            <strong>Year:</strong> {paper.year}
-                        </p>
-                        <a 
-                            href={paper.link} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="mt-3 inline-block text-sm text-sky-600 hover:text-sky-800 font-medium"
+        <div className="min-h-screen font-sans text-gray-900 bg-beige-100 flex flex-col"> 
+            
+            <header className="hero-bg hero-section hero-container w-full">
+                <div className="text-center">
+                    <div className="hero-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <h1
+                            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-3 tracking-tight leading-tight text-gray-900 hero-title"
+                            style={{ color: COLOR_BLUE_HEADER || '#3b3b3b' }}
                         >
-                            Read Full Paper &rarr;
-                        </a>
+                            Innovating the Future of
+                            <br />
+                            Human-Computer Interaction
+                        </h1>
+                        <p className="hero-sub max-w-4xl text-sm sm:text-base font-light mb-8">
+                            Exploring the symbiotic relationship between humans and technology to create intuitive, effective, and empowering digital experiences.
+                        </p>
+
+                        <div className="block"> 
+                            <SearchBox />
+                        </div>
                     </div>
-                ))}
-            </div>
+                </div>
+            </header>
+
+            <main className="max-w-7xl mx-auto pt-6 pb-20 px-4 sm:px-6 lg:px-8 w-full flex-grow">
+                <section id="featured">
+                    <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Featured Publications ({papers.length})</h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch place-items-center">
+                        {displayPapers.map((p) => (
+                            // p.id is the sequential key (e.g., "1", "2") from Firebase
+                            <PaperCard key={p.id} paper={p} onViewDetails={() => openModal(p)} />
+                        ))}
+                    </div>
+                </section>
+
+                <PaperModal paper={selectedPaper} onClose={closeModal} isOpen={isModalOpen} />
+            </main>
+
+            <footer className="w-full py-8 text-center text-gray-400 text-sm border-t border-gray-200 bg-gray-900 mt-auto">
+                <p>© {new Date().getFullYear()} HCI Research Group. All rights reserved.</p>
+            </footer>
         </div>
     );
 };

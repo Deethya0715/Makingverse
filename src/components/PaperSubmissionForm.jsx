@@ -1,7 +1,6 @@
 // src/components/PaperSubmissionForm.jsx
 
 import React, { useState, useEffect } from 'react';
-// Note: Assuming you fixed the export in your hook to be 'default' or adjust the import below
 import { usePaperSubmit } from '../hooks/usePaperSubmit'; 
 
 // Define initial state once for easy reuse

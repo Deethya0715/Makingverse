@@ -2,27 +2,34 @@
 
 import { useState, useEffect } from 'react';
 import { ref, onValue } from 'firebase/database';
-import { rtdb } from '../services/firebase'; // Use your rtdb export
+import { rtdb } from '../services/firebase'; 
+
+// NOTE: If you don't have lodash installed, change the import to: const isNaN = Number.isNaN; 
+const isNaN = Number.isNaN; 
 
 // Helper function to transform the raw imported data keys to the keys expected by the React component
 const transformData = (paperData, key) => {
-    // Attempt to extract the year from the "Publish Date" string (e.g., "2024-05-11...")
-    const publishDate = new Date(paperData["Publish Date"]);
-    const year = publishDate.getFullYear();
     
-    // Check if the 'Link' field is available in your data, 
-    // otherwise use the main object key (which is the DOI link)
-    const link = paperData.PDF || key; 
+    // 1. Determine the Year (Handles "Publish Date" from batch 1 or "year" from batch 2)
+    let year = null;
+    if (paperData["Publish Date"]) {
+        const publishDate = new Date(paperData["Publish Date"]);
+        year = publishDate.getFullYear();
+    } else if (paperData.year) {
+        year = parseInt(String(paperData.year));
+    }
+
+    // 2. Determine the Link (Handles multiple source link fields)
+    const link = paperData.link || paperData.PDF || paperData.DOI || '#'; 
 
     return {
-        id: key, // Use the main key (the DOI link) as the unique ID
-        // Map your existing field names to the lowercase names expected by the component
-        title: paperData.Title,
-        authors: paperData["Author List"], 
-        year: isNaN(year) ? null : year, // Use the extracted year
+        id: key, 
+        // 3. Map Fields (Check for multiple casing/names)
+        title: paperData.Title || paperData.title || 'Untitled Paper',
+        authors: paperData["Author List"] || paperData.authors || 'Unknown Authors', 
+        year: isNaN(year) ? null : year,
         link: link,
         
-        // Optional: Keep other fields if you might use them later
         venue: paperData.Venue,
         abstract: paperData.Abstract,
         doi: paperData.DOI
@@ -35,20 +42,20 @@ export const useFetchPapers = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Since your raw JSON is nested, we listen from the root to capture it all
-        // If you imported the JSON under a node named 'papers', change the ref to 'papers'
-        const papersRef = ref(rtdb, '/'); 
+        // Listen ONLY to the 'papers' node where your combined data resides
+        const papersRef = ref(rtdb, 'papers'); 
         
         const unsubscribe = onValue(papersRef, (snapshot) => {
             const data = snapshot.val(); 
             const papersList = [];
             
             if (data) {
-                // The root node contains keys that are the DOIs (your paper entries)
+                // Iterate over the sequential keys (1, 2, 3...)
                 Object.keys(data).forEach((key) => {
-                    // Only process entries that look like papers (i.e., not system fields)
-                    if (data[key] && data[key].Title) {
-                        papersList.push(transformData(data[key], key));
+                    const paper = data[key];
+                    // Ensure the paper object has a recognizable title field
+                    if (paper && (paper.Title || paper.title)) { 
+                        papersList.push(transformData(paper, key));
                     }
                 });
             }
