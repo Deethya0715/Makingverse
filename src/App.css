@@ -1,3 +1,5 @@
+/* src/App.css */
+
 #root {
   width: 100%;
   max-width: none;
@@ -196,13 +198,13 @@
 
 /* The centered site wrapper constrains the page content and keeps everything visually aligned */
 .site-wrap {
-  max-width: 1280px;
+  max-width: 1300px;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
 }
 /* Small tweak: make navbar content center inside the wrapper on large widths */
-.navbar > .max-w-7xl, .navbar > .container, .navbar > .site-wrap {
+.navbar > .max-w-9xl, .navbar > .container, .navbar > .site-wrap {
   margin-left: auto;
   margin-right: auto;
 }
@@ -210,7 +212,7 @@
 
 /* Navbar - centered and elegant */
 .navbar {
-  position: sticky;
+  position: static;
   top: 0;
   z-index: 30;
   background-color: rgba(255, 255, 255, 0.75);
