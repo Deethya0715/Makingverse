@@ -53,15 +53,7 @@ const PaperCard = ({ paper, onViewDetails }) => {
 
 			{/* Action Buttons */}
 			<div className="flex flex-col sm:flex-row flex-wrap gap-2 mt-6 border-t pt-4 border-gray-100">
-				{/* Primary Button to Open Modal */}
-				<button
-					onClick={onViewDetails}
-					className="flex-grow sm:flex-grow-0 px-4 py-2 text-white text-sm font-extrabold rounded-full hover:shadow-xl hover:opacity-95 transition duration-200 shadow-md"
-					style={{ backgroundColor: COLOR_PAGE }}
-				>
-					Read Full Details
-				</button>
-
+				
 				{/* Secondary Buttons */}
 				<button
 					className="px-4 py-2 text-white text-xs font-bold rounded-full hover:opacity-90 transition duration-150 shadow-md"
