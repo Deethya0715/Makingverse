@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import PaperCard from './PaperCard';
-import PaperModal from './PaperModal';
 import SearchBox from './SearchBox';
 import { useFetchPapers } from '../hooks/useFetchPapers'; 
 import { COLOR_BLUE_HEADER } from '../constants/colors';
@@ -79,7 +78,6 @@ const PublicDisplay = () => {
                     </div>
                 </section>
 
-                <PaperModal paper={selectedPaper} onClose={closeModal} isOpen={isModalOpen} />
             </main>
 
             <footer className="w-full py-8 text-center text-gray-400 text-sm border-t border-gray-200 bg-gray-900 mt-auto">
