@@ -1,93 +1,112 @@
-import React, { useState } from 'react';
-import usePaperSubmit from '../hooks/usePaperSubmit';
+// src/components/PaperSubmissionForm.jsx
+
+import React, { useState, useEffect } from 'react';
+// Note: Assuming you fixed the export in your hook to be 'default' or adjust the import below
+import { usePaperSubmit } from '../hooks/usePaperSubmit'; 
+
+// Define initial state once for easy reuse
+const initialPaperState = { title: '', authors: '', year: '', link: '' };
 
 export default function PaperSubmissionForm() {
-  const [title, setTitle] = useState('');
-  const [authors, setAuthors] = useState('');
-  const [year, setYear] = useState('');
-  const [link, setLink] = useState('');
+  // Combine state into a single object for simpler management
+  const [paperData, setPaperData] = useState(initialPaperState);
 
-  const paperData = { title, authors, year, link };
-  const { submitPaper, isLoading, error, success } = usePaperSubmit(paperData);
+  // 1. REVISED HOOK INTEGRATION: The hook takes NO arguments here
+  const { submitPaper, isLoading, error, isSuccess } = usePaperSubmit(); 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const ok = await submitPaper();
-    if (ok) {
-      // clear form on success
-      setTitle('');
-      setAuthors('');
-      setYear('');
-      setLink('');
-    }
-  };
+  // Handle input changes by updating the single state object
+  const handleChange = (e) => {
+    setPaperData({ ...paperData, [e.target.name]: e.target.value });
+  };
 
-  return (
-    <div className="max-w-2xl mx-auto p-6 bg-white/80 rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Submit a Paper</h2>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // 2. REVISED SUBMISSION: Pass the data when calling submitPaper
+    await submitPaper(paperData); 
+  };
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Title</label>
-          <input
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            type="text"
-            required
-            placeholder="Paper title"
-          />
-        </div>
+  // 3. CLEAR FORM FIX: Use useEffect to watch the hook's success state
+  useEffect(() => {
+    if (isSuccess) {
+      setPaperData(initialPaperState); // Clear the form
+    }
+  }, [isSuccess]); // Rerun only when isSuccess changes
 
-        <div>
-          <label className="block text-sm font-medium">Authors</label>
-          <input
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={authors}
-            onChange={(e) => setAuthors(e.target.value)}
-            type="text"
-            required
-            placeholder="Author names (comma-separated)"
-          />
-        </div>
+  return (
+    <div className="max-w-2xl mx-auto p-6 bg-white/80 rounded shadow">
+      <h2 className="text-xl font-semibold mb-4">➕ Submit a Paper</h2>
 
-        <div>
-          <label className="block text-sm font-medium">Year</label>
-          <input
-            className="mt-1 block w-32 border rounded px-3 py-2"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            type="number"
-            required
-            placeholder="2025"
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Title Input */}
+        <div>
+          <label className="block text-sm font-medium">Title</label>
+          <input
+            className="mt-1 block w-full border rounded px-3 py-2"
+            value={paperData.title}
+            onChange={handleChange}
+            type="text"
+            name="title" // <-- CRITICAL: Added name attribute
+            required
+            placeholder="Paper title"
+          />
+        </div>
 
-        <div>
-          <label className="block text-sm font-medium">Link</label>
-          <input
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-            type="url"
-            required
-            placeholder="https://..."
-          />
-        </div>
+        {/* Authors Input */}
+        <div>
+          <label className="block text-sm font-medium">Authors</label>
+          <input
+            className="mt-1 block w-full border rounded px-3 py-2"
+            value={paperData.authors}
+            onChange={handleChange}
+            type="text"
+            name="authors" // <-- CRITICAL: Added name attribute
+            required
+            placeholder="Author names (comma-separated)"
+          />
+        </div>
+        
+        {/* Year Input */}
+        <div>
+          <label className="block text-sm font-medium">Year</label>
+          <input
+            className="mt-1 block w-32 border rounded px-3 py-2"
+            value={paperData.year}
+            onChange={handleChange}
+            type="number"
+            name="year" // <-- CRITICAL: Added name attribute
+            required
+            placeholder="2025"
+          />
+        </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            className="px-4 py-2 rounded bg-sky-600 text-white disabled:opacity-60"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Submitting...' : 'Submit Paper'}
-          </button>
+        {/* Link Input */}
+        <div>
+          <label className="block text-sm font-medium">Link</label>
+          <input
+            className="mt-1 block w-full border rounded px-3 py-2"
+            value={paperData.link}
+            onChange={handleChange}
+            type="url"
+            name="link" // <-- CRITICAL: Added name attribute
+            required
+            placeholder="https://..."
+          />
+        </div>
 
-          {success && <div className="text-green-600">Submitted successfully.</div>}
-          {error && <div className="text-red-600">{error}</div>}
-        </div>
-      </form>
-    </div>
-  );
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            className="px-4 py-2 rounded bg-sky-600 text-white disabled:opacity-60 hover:bg-sky-700 transition"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Submitting...' : 'Submit Paper'}
+          </button>
+
+          {isSuccess && <div className="text-green-600">Submitted successfully!</div>}
+          {error && <div className="text-red-600 font-medium">Error submitting: {error.message || error}</div>}
+        </div>
+      </form>
+    </div>
+  );
 }
