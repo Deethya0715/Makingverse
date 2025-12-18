@@ -72,7 +72,6 @@ const PublicDisplay = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch place-items-center">
                         {displayPapers.map((p) => (
-                            // p.id is the sequential key (e.g., "1", "2") from Firebase
                             <PaperCard key={p.id} paper={p} onViewDetails={() => openModal(p)} />
                         ))}
                     </div>
