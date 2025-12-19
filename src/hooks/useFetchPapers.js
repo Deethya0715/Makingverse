@@ -35,6 +35,18 @@ const transformData = (paperData, key) => {
     // 2c. Determine the PDF specifically (useful when `link` is ambiguous)
     const pdf = paperData.PDF || paperData.pdf || null;
 
+    // 2d. Determine the Page/Site (accept common keys or fuzzy-match one)
+    let page = null;
+    if (paperData.Page) page = paperData.Page;
+    else if (paperData.page) page = paperData.page;
+    else if (paperData['Site']) page = paperData['Site'];
+    else if (paperData['Website']) page = paperData['Website'];
+    else if (paperData['Site Link']) page = paperData['Site Link'];
+    else {
+        const pKey = Object.keys(paperData).find(k => /site|page|website|url|homepage/i.test(k));
+        if (pKey) page = paperData[pKey];
+    }
+
     return {
         id: key, 
         // 3. Map Fields (Check for multiple casing/names)
@@ -44,6 +56,7 @@ const transformData = (paperData, key) => {
         link: link,
         video: video && String(video).trim() !== '' ? video : null,
         pdf: pdf,
+        page: page && String(page).trim() !== '' ? page : null,
         venue: paperData.Venue,
         abstract: paperData.Abstract,
         doi: paperData.DOI
