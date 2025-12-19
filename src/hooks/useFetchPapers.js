@@ -22,6 +22,19 @@ const transformData = (paperData, key) => {
     // 2. Determine the Link (Handles multiple source link fields)
     const link = paperData.link || paperData.PDF || paperData.DOI || '#'; 
 
+    // 2b. Determine the Video (accept common keys or fuzzy-match one)
+    let video = null;
+    if (paperData.Video) video = paperData.Video;
+    else if (paperData.video) video = paperData.video;
+    else if (paperData['Video Link']) video = paperData['Video Link'];
+    else {
+        const vKey = Object.keys(paperData).find(k => /video|movie|youtube/i.test(k));
+        if (vKey) video = paperData[vKey];
+    }
+
+    // 2c. Determine the PDF specifically (useful when `link` is ambiguous)
+    const pdf = paperData.PDF || paperData.pdf || null;
+
     return {
         id: key, 
         // 3. Map Fields (Check for multiple casing/names)
@@ -29,7 +42,8 @@ const transformData = (paperData, key) => {
         authors: paperData["Author List"] || paperData.authors || 'Unknown Authors', 
         year: isNaN(year) ? null : year,
         link: link,
-        
+        video: video && String(video).trim() !== '' ? video : null,
+        pdf: pdf,
         venue: paperData.Venue,
         abstract: paperData.Abstract,
         doi: paperData.DOI

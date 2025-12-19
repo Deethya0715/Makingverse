@@ -2,31 +2,47 @@ import React from 'react';
 import SchematicDiagram from './SchematicDiagram';
 import { COLOR_DOI, COLOR_PDF, COLOR_VIDEO } from '../constants/colors';
 
-/**
- * Renders a single paper card with a custom background color.
- * @param {object} paper - The data for a single paper.
- */
 const PaperCard = ({ paper, onViewDetails }) => {
-    // Correctly mapping keys based on your database JSON structure
+    // 1. Metadata mapping
     const title = paper.Title || paper.title;
     const abstract = paper.Abstract || paper.abstract;
-    const authors = paper["Author List"] || paper.authors;
-    const doiUrl = paper.DOI || paper.doi;
-    
-    // Updated to include "link" fallback from your JSON
-    const pdfUrl = paper.PDF || paper.pdf || paper.link;
-
-    // Updated to include the "Video (if)" key seen in your screenshot
-    const videoUrl = paper.Video || paper.video || paper["Video (if)"];
-    
+    const authors = paper["Author List"] || paper.authors || paper.By;
     const images = paper.images || (paper.Picture ? [paper.Picture] : []);
 
-    const openLink = (url) => {
-        if (url) {
-            window.open(url, '_blank', 'noopener,noreferrer');
-        } else {
-            alert("Link not available");
+    // 2. REFINE LINK DISCOVERY
+    // This helper checks if a key exists AND if the value is a real link (not empty)
+    const getValidUrl = (possibleKeys) => {
+        // First, check the specific keys you've mentioned
+        for (const key of possibleKeys) {
+            if (paper[key] && String(paper[key]).trim() !== "") {
+                return paper[key];
+            }
         }
+        
+        // Second, fallback to a "fuzzy" search if the specific keys aren't found
+        const fuzzyKey = Object.keys(paper).find(k => 
+            k.toLowerCase().includes('video') || 
+            k.toLowerCase().includes('movie') || 
+            k.toLowerCase().includes('youtube')
+        );
+        
+        return fuzzyKey && String(paper[fuzzyKey]).trim() !== "" ? paper[fuzzyKey] : null;
+    };
+
+    // Prefer normalized fields (from transformData) but fall back to fuzzy lookup
+    const videoUrl = paper.video || getValidUrl(["Video (if)", "Video", "video", "Video Link"]);
+    const doiUrl = paper.doi || getValidUrl(["DOI", "doi", "Doi"]);
+    const pdfUrl = paper.pdf || paper.link || getValidUrl(["PDF", "pdf", "link", "Link"]);
+
+    // DEBUGGING: Remove this once you see the buttons
+    console.log(`Paper: ${title}`, {
+        allKeys: Object.keys(paper),
+        foundVideoProp: paper.video,
+        foundVideo: videoUrl
+    });
+
+    const openLink = (url) => {
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
     };
 
     return (
@@ -35,7 +51,6 @@ const PaperCard = ({ paper, onViewDetails }) => {
             style={{ backgroundColor: '#dcc1a6' }} 
         >
             <div>
-                {/* Image Gallery or Schematic */}
                 {images.length > 0 && images[0] !== "" ? (
                     <div className="flex items-center space-x-3 overflow-x-auto pb-4">
                         {images.map((imgUrl, idx) => (
@@ -51,17 +66,14 @@ const PaperCard = ({ paper, onViewDetails }) => {
                     <SchematicDiagram schematicSteps={paper.schematicSteps} />
                 )}
 
-                {/* Content Area */}
                 <div className="mt-4 p-2">
                     <h3 className="text-lg font-extrabold text-white mb-2 leading-snug text-center">
                         {title}
                     </h3>
-
                     <div className="paper-metadata text-sm space-y-3">
                         <p className="font-semibold text-gray-100 text-center">
                             By: <span className="font-normal text-white/90">{authors}</span>
                         </p>
-
                         <p className="line-clamp-6 italic text-white/80 text-center">
                             {abstract}
                         </p>
@@ -69,25 +81,28 @@ const PaperCard = ({ paper, onViewDetails }) => {
                 </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons - Only render if URL is valid */}
             <div className="flex flex-col sm:flex-row flex-wrap gap-2 mt-6 border-t pt-4 border-white/20">
-                <button
-                    onClick={() => openLink(doiUrl)}
-                    className="px-4 py-2 text-white text-xs font-bold rounded-full hover:opacity-90 transition duration-150 shadow-md flex-1"
-                    style={{ backgroundColor: COLOR_DOI }}
-                >
-                    DOI
-                </button>
+                {doiUrl && (
+                    <button
+                        onClick={() => openLink(doiUrl)}
+                        className="px-4 py-2 text-white text-xs font-bold rounded-full hover:opacity-90 transition duration-150 shadow-md flex-1"
+                        style={{ backgroundColor: COLOR_DOI }}
+                    >
+                        DOI
+                    </button>
+                )}
 
-                <button
-                    onClick={() => openLink(pdfUrl)}
-                    className="px-4 py-2 text-white text-xs font-bold rounded-full hover:opacity-90 transition duration-150 shadow-md flex-1"
-                    style={{ backgroundColor: COLOR_PDF }}
-                >
-                    PDF
-                </button>
+                {pdfUrl && (
+                    <button
+                        onClick={() => openLink(pdfUrl)}
+                        className="px-4 py-2 text-white text-xs font-bold rounded-full hover:opacity-90 transition duration-150 shadow-md flex-1"
+                        style={{ backgroundColor: COLOR_PDF }}
+                    >
+                        PDF
+                    </button>
+                )}
 
-                {/* This will now show because videoUrl correctly picks up "Video (if)" */}
                 {videoUrl && (
                     <button
                         onClick={() => openLink(videoUrl)}
