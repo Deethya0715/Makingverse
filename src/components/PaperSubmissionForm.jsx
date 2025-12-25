@@ -1,111 +1,122 @@
-// src/components/PaperSubmissionForm.jsx
-
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePaperSubmit } from '../hooks/usePaperSubmit'; 
 
-// Define initial state once for easy reuse
 const initialPaperState = { title: '', authors: '', year: '', link: '' };
 
 export default function PaperSubmissionForm() {
-  // Combine state into a single object for simpler management
-  const [paperData, setPaperData] = useState(initialPaperState);
+  const [paperData, setPaperData] = useState(initialPaperState);
+  const navigate = useNavigate();
+  const { submitPaper, isLoading, error, isSuccess } = usePaperSubmit(); 
 
-  // 1. REVISED HOOK INTEGRATION: The hook takes NO arguments here
-  const { submitPaper, isLoading, error, isSuccess } = usePaperSubmit(); 
+  const handleChange = (e) => {
+    setPaperData({ ...paperData, [e.target.name]: e.target.value });
+  };
 
-  // Handle input changes by updating the single state object
-  const handleChange = (e) => {
-    setPaperData({ ...paperData, [e.target.name]: e.target.value });
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await submitPaper(paperData); 
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // 2. REVISED SUBMISSION: Pass the data when calling submitPaper
-    await submitPaper(paperData); 
-  };
+  useEffect(() => {
+    if (isSuccess) {
+      setPaperData(initialPaperState);
+    }
+  }, [isSuccess]);
 
-  // 3. CLEAR FORM FIX: Use useEffect to watch the hook's success state
-  useEffect(() => {
-    if (isSuccess) {
-      setPaperData(initialPaperState); // Clear the form
-    }
-  }, [isSuccess]); // Rerun only when isSuccess changes
-
-  return (
-    <div className="max-w-2xl mx-auto p-6 bg-white/80 rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">➕ Submit a Paper</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Title Input */}
-        <div>
-          <label className="block text-sm font-medium">Title</label>
-          <input
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={paperData.title}
-            onChange={handleChange}
-            type="text"
-            name="title" // <-- CRITICAL: Added name attribute
-            required
-            placeholder="Paper title"
-          />
-        </div>
-
-        {/* Authors Input */}
-        <div>
-          <label className="block text-sm font-medium">Authors</label>
-          <input
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={paperData.authors}
-            onChange={handleChange}
-            type="text"
-            name="authors" // <-- CRITICAL: Added name attribute
-            required
-            placeholder="Author names (comma-separated)"
-          />
-        </div>
+  return (
+    <div className="max-w-xl mx-auto p-10 mt-10">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-8">
         
-        {/* Year Input */}
-        <div>
-          <label className="block text-sm font-medium">Year</label>
-          <input
-            className="mt-1 block w-32 border rounded px-3 py-2"
-            value={paperData.year}
-            onChange={handleChange}
-            type="number"
-            name="year" // <-- CRITICAL: Added name attribute
-            required
-            placeholder="2025"
-          />
-        </div>
+        {/* Paper Title */}
+        <div className="flex flex-col">
+          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Paper Title</label>
+          <input
+            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
+            value={paperData.title}
+            onChange={handleChange}
+            name="title"
+            required
+            placeholder="Enter title"
+          />
+        </div>
 
-        {/* Link Input */}
-        <div>
-          <label className="block text-sm font-medium">Link</label>
-          <input
-            className="mt-1 block w-full border rounded px-3 py-2"
-            value={paperData.link}
-            onChange={handleChange}
-            type="url"
-            name="link" // <-- CRITICAL: Added name attribute
-            required
-            placeholder="https://..."
-          />
-        </div>
+        {/* Year */}
+        <div className="flex flex-col">
+          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Publication Year</label>
+          <input
+            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
+            value={paperData.year}
+            onChange={handleChange}
+            type="number"
+            name="year"
+            required
+            placeholder="Year"
+          />
+        </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            className="px-4 py-2 rounded bg-sky-600 text-white disabled:opacity-60 hover:bg-sky-700 transition"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Submitting...' : 'Submit Paper'}
-          </button>
+        {/* Authors */}
+        <div className="flex flex-col">
+          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Authors</label>
+          <input
+            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
+            value={paperData.authors}
+            onChange={handleChange}
+            name="authors"
+            required
+            placeholder="Enter authors"
+          />
+        </div>
 
-          {isSuccess && <div className="text-green-600">Submitted successfully!</div>}
-          {error && <div className="text-red-600 font-medium">Error submitting: {error.message || error}</div>}
-        </div>
-      </form>
-    </div>
-  );
+        {/* Link */}
+        <div className="flex flex-col">
+          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Paper Link</label>
+          <input
+            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
+            value={paperData.link}
+            onChange={handleChange}
+            type="url"
+            name="link"
+            required
+            placeholder="https://"
+          />
+        </div>
+
+        <p className="text-gray-600 text-center font-medium italic">
+          Verify all details before submitting.
+        </p>
+
+        {/* FIXED BUTTONS SECTION */}
+        <div className="flex items-center justify-center gap-6 pt-6">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="flex-1 px-8 py-4 !bg-gray-200 !text-black border-2 border-black rounded-xl font-bold uppercase tracking-tight hover:!bg-gray-300 transition-all shadow-sm"
+          >
+            Cancel
+          </button>
+          
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="flex-1 px-8 py-4 !bg-black !text-white border-2 border-black rounded-xl font-bold uppercase tracking-tight hover:!bg-gray-800 transition-all shadow-xl disabled:opacity-50"
+          >
+            {isLoading ? 'Wait...' : 'Submit'}
+          </button>
+        </div>
+
+        {/* Status Messages */}
+        {isSuccess && (
+          <div className="bg-black text-green-400 p-4 rounded-lg text-center font-bold border border-green-900 mt-4">
+            ✓ PAPER PUBLISHED SUCCESSFULLY
+          </div>
+        )}
+        {error && (
+          <div className="bg-black text-red-500 p-4 rounded-lg text-center font-bold border border-red-900 mt-4">
+            ERROR: {error.message || error}
+          </div>
+        )}
+      </form>
+    </div>
+  );
 }

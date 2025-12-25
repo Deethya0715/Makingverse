@@ -4,7 +4,6 @@ import SearchBox from './SearchBox';
 import { useFetchPapers } from '../hooks/useFetchPapers'; 
 import { COLOR_BLUE_HEADER } from '../constants/colors';
 
-// Added isAdmin and onAdminLogin props
 const PublicDisplay = ({ isAdmin, onAdminLogin }) => {
     const { papers, loading } = useFetchPapers();
     const [selectedPaper, setSelectedPaper] = useState(null);
@@ -70,11 +69,12 @@ const PublicDisplay = ({ isAdmin, onAdminLogin }) => {
 
             <footer className="w-full py-8 text-center text-gray-400 text-sm border-t border-gray-200 bg-gray-900 mt-auto">
                 <p>© {new Date().getFullYear()} HCI Research Group. All rights reserved.</p>
-                {/* Hidden Admin Trigger */}
+                
+                {/* Fixed Admin Trigger Visibility */}
                 {!isAdmin && (
                     <button 
                         onClick={handleAdminClick}
-                        className="mt-4 text-[10px] text-gray-600 hover:text-gray-400 transition"
+                        className="mt-4 text-xs text-gray-500 hover:text-gray-300 transition block mx-auto"
                     >
                         Admin Access
                     </button>
