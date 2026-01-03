@@ -19,104 +19,119 @@ export default function PaperSubmissionForm() {
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      setPaperData(initialPaperState);
-    }
+    if (isSuccess) setPaperData(initialPaperState);
   }, [isSuccess]);
 
   return (
-    <div className="max-w-xl mx-auto p-10 mt-10">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-8">
+    <div className="min-h-screen bg-[#fdfbf7] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-xl w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
         
-        {/* Paper Title */}
-        <div className="flex flex-col">
-          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Paper Title</label>
-          <input
-            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
-            value={paperData.title}
-            onChange={handleChange}
-            name="title"
-            required
-            placeholder="Enter title"
-          />
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            Submit Research
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Add a new paper to the Design & Engineering archive.
+          </p>
         </div>
 
-        {/* Year */}
-        <div className="flex flex-col">
-          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Publication Year</label>
-          <input
-            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
-            value={paperData.year}
-            onChange={handleChange}
-            type="number"
-            name="year"
-            required
-            placeholder="Year"
-          />
-        </div>
-
-        {/* Authors */}
-        <div className="flex flex-col">
-          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Authors</label>
-          <input
-            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
-            value={paperData.authors}
-            onChange={handleChange}
-            name="authors"
-            required
-            placeholder="Enter authors"
-          />
-        </div>
-
-        {/* Link */}
-        <div className="flex flex-col">
-          <label className="text-gray-800 text-sm font-bold mb-2 uppercase tracking-wide">Paper Link</label>
-          <input
-            className="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-gray-500 transition-all placeholder-gray-500"
-            value={paperData.link}
-            onChange={handleChange}
-            type="url"
-            name="link"
-            required
-            placeholder="https://"
-          />
-        </div>
-
-        <p className="text-gray-600 text-center font-medium italic">
-          Verify all details before submitting.
-        </p>
-
-        {/* FIXED BUTTONS SECTION */}
-        <div className="flex items-center justify-center gap-6 pt-6">
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="flex-1 px-8 py-4 !bg-gray-200 !text-black border-2 border-black rounded-xl font-bold uppercase tracking-tight hover:!bg-gray-300 transition-all shadow-sm"
-          >
-            Cancel
-          </button>
+        <form onSubmit={handleSubmit} className="space-y-6 mt-8">
           
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="flex-1 px-8 py-4 !bg-black !text-white border-2 border-black rounded-xl font-bold uppercase tracking-tight hover:!bg-gray-800 transition-all shadow-xl disabled:opacity-50"
-          >
-            {isLoading ? 'Wait...' : 'Submit'}
-          </button>
-        </div>
+          {/* Title */}
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+              Paper Title
+            </label>
+            <input
+              name="title"
+              type="text"
+              required
+              className="block w-full px-4 py-3 bg-gray-50 border border-gray-200 text-gray-900 rounded-lg focus:ring-2 focus:ring-black focus:bg-white focus:outline-none transition-all"
+              placeholder="e.g. Sustainable Materials in Manufacturing"
+              value={paperData.title}
+              onChange={handleChange}
+            />
+          </div>
 
-        {/* Status Messages */}
-        {isSuccess && (
-          <div className="bg-black text-green-400 p-4 rounded-lg text-center font-bold border border-green-900 mt-4">
-            ✓ PAPER PUBLISHED SUCCESSFULLY
+          {/* Grid for Year/Authors */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-1">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                Year
+              </label>
+              <input
+                name="year"
+                type="number"
+                required
+                className="block w-full px-4 py-3 bg-gray-50 border border-gray-200 text-gray-900 rounded-lg focus:ring-2 focus:ring-black focus:bg-white focus:outline-none transition-all"
+                placeholder="2024"
+                value={paperData.year}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                Authors
+              </label>
+              <input
+                name="authors"
+                type="text"
+                required
+                className="block w-full px-4 py-3 bg-gray-50 border border-gray-200 text-gray-900 rounded-lg focus:ring-2 focus:ring-black focus:bg-white focus:outline-none transition-all"
+                placeholder="J. Doe, A. Smith..."
+                value={paperData.authors}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-        )}
-        {error && (
-          <div className="bg-black text-red-500 p-4 rounded-lg text-center font-bold border border-red-900 mt-4">
-            ERROR: {error.message || error}
+
+          {/* Link */}
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+              Direct Link
+            </label>
+            <input
+              name="link"
+              type="url"
+              required
+              className="block w-full px-4 py-3 bg-gray-50 border border-gray-200 text-gray-900 rounded-lg focus:ring-2 focus:ring-black focus:bg-white focus:outline-none transition-all"
+              placeholder="https://"
+              value={paperData.link}
+              onChange={handleChange}
+            />
           </div>
-        )}
-      </form>
+
+          {/* Buttons */}
+          <div className="flex gap-4 pt-4">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="w-1/3 py-3 px-4 border border-gray-300 rounded-xl font-bold text-gray-700 bg-white hover:bg-gray-50 transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-2/3 py-3 px-4 rounded-xl font-bold text-white bg-black hover:bg-gray-800 disabled:opacity-50 transition-all shadow-lg"
+            >
+              {isLoading ? 'Processing...' : 'Submit Paper'}
+            </button>
+          </div>
+
+          {/* Alerts */}
+          {isSuccess && (
+            <div className="bg-green-50 text-green-800 p-4 rounded-lg text-center font-medium border border-green-200">
+              ✓ Paper published successfully!
+            </div>
+          )}
+          {error && (
+            <div className="bg-red-50 text-red-800 p-4 rounded-lg text-center font-medium border border-red-200">
+              {error.message || "An error occurred."}
+            </div>
+          )}
+        </form>
+      </div>
     </div>
   );
 }
