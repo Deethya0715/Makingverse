@@ -1,12 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-export default function SearchBox() {
+// Accept an 'onSearch' prop from the parent
+export default function SearchBox({ onSearch }) {
   const [query, setQuery] = useState('');
   const refInput = useRef(null);
 
+  // Debounce logic: Only trigger the search 300ms after the user stops typing
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      // Send the query up to the parent component
+      if (onSearch) {
+        onSearch(query);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [query, onSearch]);
+
   return (
     <div className="relative w-full max-w-3xl mx-auto">
-
       <input
         ref={refInput}
         value={query}
@@ -24,6 +36,7 @@ export default function SearchBox() {
           aria-label="Clear search"
           onClick={() => {
             setQuery('');
+            // Focus back on input after clearing
             if (refInput.current) refInput.current.focus();
           }}
         >
